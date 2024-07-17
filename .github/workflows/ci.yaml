@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [develop, QA, main]
+
+jobs:
+  node-version:
+    strategy:
+      matrix:
+        node_version: [18, 20]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node_version }}
+      - name: Install package
+        run: npm ci
+      - name: Testing type-check
+        run: npm run type-check
+      - name: Testing build
+        run: npm run build:direct
